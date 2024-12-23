@@ -63,6 +63,9 @@
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.18.1"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "commonjs",
   "main": "./dist/cjs/index.cjs",
   "module": "./dist/esm/index.mjs",
