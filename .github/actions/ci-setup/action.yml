@@ -55,6 +55,10 @@ runs:
         node-version: lts/*
         registry-url: 'https://registry.npmjs.org'
 
+    - name: Enable Corepack
+      shell: bash
+      run: corepack enable
+
     - name: Restore build cache
       id: restore-build-cache
       if: ${{ inputs.restore-build-cache == 'true' }}
