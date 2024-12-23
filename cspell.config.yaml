@@ -1,0 +1,28 @@
+$schema: "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json"
+version: "0.2"
+useGitignore: true
+dictionaryDefinitions:
+  - name: custom
+    path: ./cspell.custom.txt
+    addWords: true
+dictionaries:
+  - css
+  - custom
+  - en-gb
+  - en_us
+  - git
+  - html
+  - html-symbol-entities
+  - markdown
+  - node
+  - npm
+  - shell
+  - typescript
+globRoot: "${cwd}"
+ignorePaths:
+  - .git/
+  - .vscode/
+  - .yarn/
+  - dist/
+  - node_modules/
+  - yarn.lock

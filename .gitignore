@@ -1,0 +1,16 @@
+# Bootstrap phase
+/bootstrap/
+
+# Distribution
+dist/
+
+# Environment-specific
+.env
+.env.*
+
+# Husky artifacts
+.husky/_/
+
+# Package manager artifacts
+.yarn/
+node_modules/
