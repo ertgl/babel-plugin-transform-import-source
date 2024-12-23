@@ -31,8 +31,9 @@
     "lint": "yarn eslint:lint && yarn commitlint:lint::last",
     "lint:fix": "yarn eslint:fix",
     "prepare": "husky",
-    "release": "yarn changeset:version && yarn changeset:tag && yarn git:push::tags",
-    "test": "node --test --test-reporter=spec ./test/*.{spec,test}.{cjs,js,mjs}"
+    "release": "yarn changeset:tag && yarn git:push::tags",
+    "test": "node --test --test-reporter=spec ./test/*.{spec,test}.{cjs,js,mjs}",
+    "version": "yarn changeset:version"
   },
   "packageManager": "yarn@4.5.3",
   "dependencies": {
