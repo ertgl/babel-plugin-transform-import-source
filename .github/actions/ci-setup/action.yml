@@ -83,7 +83,7 @@ runs:
 
     - name: Cache node_modules
       id: cache-node-modules
-      if: ${{ inputs.cache-node-modules == 'true' }}
+      if: ${{ inputs.cache-node-modules == 'true' && steps.restore-node-modules-cache.outputs.cache-hit != 'true' && steps.install-dependencies.conclusion == 'success' }}
       uses: actions/cache/save@v4
       with:
         path: node_modules
@@ -100,23 +100,26 @@ runs:
       run: yarn bootstrap
 
     - name: Build CJS
+      id: build-cjs
       if: steps.restore-build-cache.outputs.cache-hit != 'true'
       shell: bash
       run: yarn build::cjs
 
     - name: Build ESM
+      id: build-esm
       if: steps.restore-build-cache.outputs.cache-hit != 'true'
       shell: bash
       run: yarn build::esm
 
     - name: Build types
+      id: build-types
       if: steps.restore-build-cache.outputs.cache-hit != 'true'
       shell: bash
       run: yarn build::types
 
     - name: Cache build
       id: cache-build
-      if: ${{ inputs.cache-build == 'true' }}
+      if: ${{ inputs.cache-build == 'true' && steps.restore-build-cache.outputs.cache-hit != 'true' && steps.build-cjs.conclusion == 'success' && steps.build-esm.conclusion == 'success' && steps.build-types.conclusion == 'success' }}
       uses: actions/cache/save@v4
       with:
         path: dist
