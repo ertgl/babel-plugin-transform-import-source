@@ -27,9 +27,9 @@ jobs:
         uses: ./.github/actions/ci-setup
 
   test:
-    name: test
+    if: ${{ needs.build.result == 'success' }}
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,30 +39,13 @@ jobs:
         run: yarn test
 
   lint:
-    name: lint
+    if: ${{ needs.build.result == 'success' }}
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup
         uses: ./.github/actions/ci-setup
       - name: Lint
-        run: yarn eslint:lint
-
-  publish:
-    if: ${{ github.repository == 'ertgl/babel-plugin-transform-import-source' && github.ref == 'refs/heads/main' && needs.test.result == 'success' && needs.lint.result == 'success' }}
-    runs-on: ubuntu-latest
-    needs: [test, lint]
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup
-        uses: ./.github/actions/ci-setup
-      - name: Publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public --provenance
+        run: yarn lint
