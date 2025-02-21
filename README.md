@@ -2,6 +2,27 @@
 
 [Babel](https://babeljs.io/) plugin for transforming import sources.
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [JSON Configuration](#json-configuration)
+  - [Low-Level API](#low-level-api)
+    - [Technical Details](#technical-details)
+    - [Transformer Context](#transformer-context)
+  - [Module Methods](#module-methods)
+    - [Type Definitions for Module Methods](#type-definitions-for-module-methods)
+  - [Magic Comments](#magic-comments)
+- [Options](#options)
+  - [`moduleMethods`](#modulemethods)
+  - [`transform`](#transform)
+  - [`transformer`](#transformer)
+- [Development Notes](#development-notes)
+  - [Build Process](#build-process)
+- [License](#license)
+
 ## Overview
 
 This plugin allows transforming import sources in the `require`, `import`, and
