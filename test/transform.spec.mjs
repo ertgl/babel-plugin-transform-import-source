@@ -54,6 +54,7 @@ function transpileCode(
       rules: [
         {
           find: /(?:\.[cm]?[jt]s[x]?)?$/iu,
+          indexFallback: "index",
           replace: targetExtension,
           resolveIndex: true,
           test: /^[.\\/]+.*$/iu,

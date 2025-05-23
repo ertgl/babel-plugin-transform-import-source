@@ -1,7 +1,7 @@
 {
   "name": "babel-plugin-transform-import-source",
   "description": "Babel plugin for transforming import sources.",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "license": "MIT",
   "repository": {
     "type": "git",

@@ -37,6 +37,8 @@ export interface TransformationRule
 {
   find: JSONRegexp | RegExp | string;
   includeAbsolute?: boolean | null;
+  indexFallback?: null | string;
+  indexFileExtensions?: null | string[];
   replace: string;
   resolveIndex?: boolean | null;
   test?: JSONRegexp | null | RegExp | string;
@@ -203,10 +205,39 @@ export function createDefaultTransformer(): Transformer
 
       if (importPathStats?.isDirectory() ?? false)
       {
-        return `${context.importSource}/index`.replace(
-          findQuery,
-          matchedRule.replace,
-        );
+        if (matchedRule.indexFileExtensions != null)
+        {
+          for (const extension of matchedRule.indexFileExtensions)
+          {
+            const absoluteIndexFilePath = resolvePath(
+              absoluteImportPath,
+              `index${extension}`,
+            );
+
+            const indexFileStats = statSync(
+              absoluteIndexFilePath,
+              {
+                throwIfNoEntry: false,
+              },
+            );
+
+            if (indexFileStats?.isFile() ?? false)
+            {
+              return `${context.importSource}/index${extension}`.replace(
+                findQuery,
+                matchedRule.replace,
+              );
+            }
+          }
+        }
+
+        if (matchedRule.indexFallback != null)
+        {
+          return `${context.importSource}/${matchedRule.indexFallback}`.replace(
+            findQuery,
+            matchedRule.replace,
+          );
+        }
       }
     }
 
