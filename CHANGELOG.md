@@ -1,5 +1,12 @@
 # babel-plugin-transform-import-source
 
+## 2.1.0
+
+### Minor Changes
+
+- Introduce `resolveIndex.prioritize` option to resolve conflicts between
+  barrel and non-barrel files sharing the same import source.
+
 ## 2.0.1
 
 ### Patch Changes

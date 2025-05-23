@@ -6,6 +6,7 @@ import {
   mock,
   test,
 } from "node:test";
+import { fileURLToPath } from "node:url";
 
 import { transformSync } from "@babel/core";
 
@@ -14,11 +15,12 @@ import { transformSync } from "@babel/core";
  *
  * @import {
  *   type Options as ImportSourceTransformerPluginOptions,
+ *   type TransformationRule,
  *   type Transformer,
  * } from "../src/index.js";
  */
 
-const __filename = new URL("", import.meta.url).pathname;
+const __filename = fileURLToPath(import.meta.url);
 
 const __dirname = dirname(__filename);
 
@@ -28,12 +30,14 @@ const require = createRequire(import.meta.url);
  * @param {string} code
  * @param {string} targetExtension
  * @param {Transformer | null} [transformer]
+ * @param {Partial<TransformationRule> | null} [ruleOverrides]
  * @returns {string}
  */
 function transpileCode(
   code,
   targetExtension,
   transformer,
+  ruleOverrides,
 )
 {
   /**
@@ -54,10 +58,15 @@ function transpileCode(
       rules: [
         {
           find: /(?:\.[cm]?[jt]s[x]?)?$/iu,
-          indexFallback: "index",
           replace: targetExtension,
-          resolveIndex: true,
           test: /^[.\\/]+.*$/iu,
+          ...ruleOverrides,
+          resolveIndex: (
+            ruleOverrides?.resolveIndex
+            ?? {
+              fallback: "index",
+            }
+          ),
         },
       ],
     },
@@ -121,9 +130,9 @@ const CASES = [
             isFile: true,
             isFixture: false,
             sourceExtension,
-            sourceImport: `./foo${sourceExtension}`,
+            sourceImport: `./fixtures/foo${sourceExtension}`,
             targetExtension,
-            targetImport: `./foo${targetExtension}`,
+            targetImport: `./fixtures/foo${targetExtension}`,
           };
         },
       );
@@ -417,5 +426,105 @@ void test(
         );
       },
     );
+  },
+);
+
+void test(
+  "prioritized index resolution",
+  (t) =>
+  {
+    const source = `import("./fixtures/baz");`;
+    const expected = `import("./fixtures/baz/index.mjs");`;
+
+    const result = transpileCode(
+      source,
+      ".mjs",
+      null,
+      {
+        resolveIndex: {
+          extensions: [
+            ".mjs",
+          ],
+          prioritize: true,
+        },
+      },
+    );
+
+    strictEqual(result, expected);
+  },
+);
+
+void test(
+  "prioritized index resolution (non-existent)",
+  (t) =>
+  {
+    const source = `import("./fixtures/bar");`;
+    const expected = `import("./fixtures/bar.cjs");`;
+
+    const result = transpileCode(
+      source,
+      ".cjs",
+      null,
+      {
+        resolveIndex: {
+          extensions: [
+            ".cjs",
+          ],
+          prioritize: true,
+        },
+      },
+    );
+
+    strictEqual(result, expected);
+  },
+);
+
+void test(
+  "non-prioritized index resolution",
+  (t) =>
+  {
+    const source = `import("./fixtures/baz");`;
+    const expected = `import("./fixtures/baz.mjs");`;
+
+    const result = transpileCode(
+      source,
+      ".mjs",
+      null,
+      {
+        resolveIndex: {
+          extensions: [
+            ".mjs",
+          ],
+          prioritize: false,
+        },
+      },
+    );
+
+    strictEqual(result, expected);
+  },
+);
+
+void test(
+  "non-prioritized index resolution (non-existent)",
+  (t) =>
+  {
+    const source = `import("./fixtures/bar");`;
+    const expected = `import("./fixtures/bar.cjs");`;
+
+    const result = transpileCode(
+      source,
+      ".cjs",
+      null,
+      {
+        resolveIndex: {
+          extensions: [
+            ".cjs",
+          ],
+          prioritize: false,
+        },
+      },
+    );
+
+    strictEqual(result, expected);
   },
 );
