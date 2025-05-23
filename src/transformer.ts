@@ -25,6 +25,16 @@ import {
   type JSONRegexp,
 } from "./regexp";
 
+export type IndexResolutionFallbackHandler = (
+  transformerContext: TransformerContext,
+  fallbackHandlerContext: IndexResolutionFallbackHandlerContext,
+) => null | string | undefined;
+
+export type IndexResolutionFallbackHandlerContext = {
+  findQuery: RegExp | string;
+  matchedRule: TransformationRule;
+};
+
 export type ManagedNodePath = (
   | NodePath<CallExpression>
   | NodePath<ExportAllDeclaration>
@@ -37,12 +47,16 @@ export interface TransformationRule
 {
   find: JSONRegexp | RegExp | string;
   includeAbsolute?: boolean | null;
-  indexFallback?: null | string;
-  indexFileExtensions?: null | string[];
   replace: string;
-  resolveIndex?: boolean | null;
+  resolveIndex?: boolean | null | TransformationRuleIndexResolutionOptions;
   test?: JSONRegexp | null | RegExp | string;
 }
+
+export type TransformationRuleIndexResolutionOptions = {
+  extensions?: null | string[];
+  fallback?: IndexResolutionFallbackHandler | null | string;
+  prioritize?: boolean | null;
+};
 
 export type TransformCallbackHandler = (
   finalImportSource: string,
@@ -191,6 +205,12 @@ export function createDefaultTransformer(): Transformer
 
     if (matchedRule.resolveIndex && context.dirname != null)
     {
+      const indexResolutionOptions = (
+        matchedRule.resolveIndex === true
+          ? {}
+          : matchedRule.resolveIndex
+      );
+
       const absoluteImportPath = resolvePath(
         context.dirname,
         context.importSource,
@@ -205,9 +225,32 @@ export function createDefaultTransformer(): Transformer
 
       if (importPathStats?.isDirectory() ?? false)
       {
-        if (matchedRule.indexFileExtensions != null)
+        if (indexResolutionOptions.extensions != null)
         {
-          for (const extension of matchedRule.indexFileExtensions)
+          if (!indexResolutionOptions.prioritize)
+          {
+            for (const extension of indexResolutionOptions.extensions)
+            {
+              const absoluteNonIndexFilePath = `${absoluteImportPath}${extension}`;
+
+              const nonIndexFileStats = statSync(
+                absoluteNonIndexFilePath,
+                {
+                  throwIfNoEntry: false,
+                },
+              );
+
+              if (nonIndexFileStats?.isFile() ?? false)
+              {
+                return `${context.importSource}${extension}`.replace(
+                  findQuery,
+                  matchedRule.replace,
+                );
+              }
+            }
+          }
+
+          for (const extension of indexResolutionOptions.extensions)
           {
             const absoluteIndexFilePath = resolvePath(
               absoluteImportPath,
@@ -231,12 +274,30 @@ export function createDefaultTransformer(): Transformer
           }
         }
 
-        if (matchedRule.indexFallback != null)
+        if (indexResolutionOptions.fallback != null)
         {
-          return `${context.importSource}/${matchedRule.indexFallback}`.replace(
-            findQuery,
-            matchedRule.replace,
-          );
+          if (typeof indexResolutionOptions.fallback === "function")
+          {
+            const fallbackValue = indexResolutionOptions.fallback(
+              context,
+              {
+                findQuery,
+                matchedRule,
+              },
+            );
+
+            if (fallbackValue != null)
+            {
+              return fallbackValue;
+            }
+          }
+          else
+          {
+            return `${context.importSource}/${indexResolutionOptions.fallback}`.replace(
+              findQuery,
+              matchedRule.replace,
+            );
+          }
         }
       }
     }
