@@ -10,6 +10,7 @@ updates:
       babel:
         patterns:
           - "@babel/*"
+          - "@types/babel__*"
       changesets:
         patterns:
           - "@changesets/*"
@@ -20,6 +21,7 @@ updates:
         patterns:
           - "@cspell/*"
           - "@eslint/*"
+          - "@types/node"
           - "eslint"
           - "eslint-*"
           - "*-eslint"
