@@ -1,5 +1,12 @@
 # babel-plugin-transform-import-source
 
+## 2.0.1
+
+### Patch Changes
+
+- Fix a caching issue that could cause CI to publish stale code. Caching
+  behavior is now deterministic to ensure correct code is always released.
+
 ## 2.0.0
 
 ### Major Changes
