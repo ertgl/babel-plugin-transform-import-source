@@ -9,6 +9,7 @@ import cspellPlugin from "@cspell/eslint-plugin";
 import javascriptPlugin from "@eslint/js";
 import stylisticPlugin from "@stylistic/eslint-plugin";
 import perfectionistPlugin from "eslint-plugin-perfectionist";
+import { defineConfig } from "eslint/config";
 import globals from "globals";
 import typescriptPlugin from "typescript-eslint";
 
@@ -68,7 +69,7 @@ const stylisticBaseCustomizationOptions = {
 /**
  * @type {Config}
  */
-export default typescriptPlugin.config([
+export default defineConfig([
   {
     files: [
       PATTERN_ALL,
