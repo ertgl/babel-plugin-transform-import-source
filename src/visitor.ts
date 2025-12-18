@@ -4,7 +4,6 @@ import type {
   Visitor,
 } from "@babel/core";
 import type { BabelAPI } from "@babel/helper-plugin-utils";
-
 import {
   type CallExpression,
   type ExportAllDeclaration,
@@ -14,7 +13,6 @@ import {
 } from "@babel/types";
 
 import type { ModuleMethods } from "./module-methods";
-
 import {
   createTransformerDelegator,
   type Transformer,

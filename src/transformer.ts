@@ -11,7 +11,6 @@ import type {
   PluginPass,
 } from "@babel/core";
 import type { BabelAPI } from "@babel/helper-plugin-utils";
-
 import {
   type CallExpression,
   type ExportAllDeclaration,
