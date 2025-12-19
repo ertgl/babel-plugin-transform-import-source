@@ -272,35 +272,53 @@ export default defineConfig([
       "perfectionist/sort-imports": [
         "error",
         {
-          customGroups: {
-            type: {
-              "node-type": /^node:.+$/iu.source,
+          customGroups: [
+            {
+              elementNamePattern: /^node:.+$/iu.source,
+              groupName: "type-node",
+              selector: "type",
             },
-            value: {
-              node: /^node:.+$/iu.source,
+            {
+              elementNamePattern: /^node:.+$/iu.source,
+              groupName: "value-node",
             },
-          },
+          ],
           groups: [
-            ["node-type"],
-            ["node"],
-            ["builtin"],
-            ["type"],
-            ["external"],
-            ["internal-type"],
-            ["internal"],
-            ["parent-type"],
-            ["parent"],
-            ["sibling-type"],
-            ["sibling"],
-            ["index-type"],
-            ["index"],
-            ["object"],
+            [
+              "type-node",
+              "value-node",
+              "value-builtin",
+            ],
+            [
+              "type-import",
+              "value-external",
+            ],
+            [
+              "type-internal",
+              "value-internal",
+            ],
+            [
+              "type-parent",
+              "value-parent",
+            ],
+            [
+              "type-sibling",
+              "value-sibling",
+            ],
+            [
+              "type-index",
+              "value-index",
+            ],
+            ["ts-equals-import"],
             ["unknown"],
           ],
           ignoreCase: false,
-          internalPattern: [],
-          newlinesBetween: "always",
-          tsconfigRootDir: __dirname,
+          internalPattern: [
+            /^babel-plugin-transform-import-source(?:[\\/].*)?$/iu.source,
+          ],
+          tsconfig: {
+            rootDir: __dirname,
+          },
         },
       ],
     },
