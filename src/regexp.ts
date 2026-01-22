@@ -18,7 +18,6 @@ export function ensureIfRegExp<T>(
       : T
   )
 );
-
 export function ensureIfRegExp<T>(
   value: JSONRegexp | RegExp | T,
 ): RegExp | T
