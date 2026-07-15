@@ -1,9 +1,9 @@
 /**
- * @import { type TransformOptions } from "@babel/core";
+ * @import { type InputOptions } from "@babel/core";
  */
 
 /**
- * @type {TransformOptions}
+ * @type {InputOptions}
  */
 module.exports = {
   presets: [

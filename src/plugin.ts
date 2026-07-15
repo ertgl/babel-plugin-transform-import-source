@@ -1,7 +1,5 @@
-import {
-  type BabelAPI,
-  declare,
-} from "@babel/helper-plugin-utils";
+import type { PluginAPI } from "@babel/core";
+import { declare } from "@babel/helper-plugin-utils";
 
 import {
   type ModuleMethodsOptions,
@@ -23,7 +21,7 @@ export interface Options
 
 export const plugin = declare<Options>(
   (
-    api: BabelAPI,
+    api: PluginAPI,
     options: null | Options | undefined,
     dirname: string,
   ) =>

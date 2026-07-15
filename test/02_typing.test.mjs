@@ -20,7 +20,7 @@ void test(
     // eslint-disable-next-line @typescript-eslint/unbound-method
     _ = require.transform;
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/unbound-method
+    // eslint-disable-next-line @typescript-eslint/unbound-method, @typescript-eslint/no-unused-vars
     _ = import.meta.transform;
   },
 );

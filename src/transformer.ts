@@ -6,17 +6,17 @@ import {
 } from "node:path";
 
 import type {
-  Node,
-  NodePath,
+  PluginAPI,
   PluginPass,
 } from "@babel/core";
-import type { BabelAPI } from "@babel/helper-plugin-utils";
-import {
-  type CallExpression,
-  type ExportAllDeclaration,
-  type ExportNamedDeclaration,
-  type ImportDeclaration,
-  type ImportExpression,
+import type { NodePath } from "@babel/traverse";
+import type {
+  CallExpression,
+  ExportAllDeclaration,
+  ExportNamedDeclaration,
+  ImportDeclaration,
+  ImportExpression,
+  Node,
 } from "@babel/types";
 
 import {
@@ -68,7 +68,7 @@ export type Transformer = (
 
 export type TransformerContext = (
   & {
-    readonly api: BabelAPI;
+    readonly api: PluginAPI;
     readonly importSource: string;
     readonly importSourceNode: Node;
     readonly nodePath: ManagedNodePath;
@@ -92,7 +92,7 @@ export type TransformerContext = (
 );
 
 export type TransformerDelegator = (
-  api: BabelAPI,
+  api: PluginAPI,
   nodePath: (
     | NodePath<CallExpression>
     | NodePath<ExportAllDeclaration>
@@ -314,7 +314,7 @@ export function createTransformerDelegator(
 ): TransformerDelegator
 {
   return (
-    api: BabelAPI,
+    api: PluginAPI,
     nodePath: ManagedNodePath,
     state: PluginPass,
     importSourceNode: Node,
@@ -327,11 +327,7 @@ export function createTransformerDelegator(
       dirname: (
         typeof state.file.opts.filename === "string"
           ? dirname(state.file.opts.filename)
-          : (
-              state.file.opts.filename === null
-                ? null
-                : undefined
-            )
+          : undefined
       ) as undefined,
       filename: state.file.opts.filename as undefined,
       importSource,
