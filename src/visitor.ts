@@ -1,9 +1,9 @@
 import type {
   NodePath,
+  PluginAPI,
   PluginPass,
   Visitor,
 } from "@babel/core";
-import type { BabelAPI } from "@babel/helper-plugin-utils";
 import {
   type CallExpression,
   type ExportAllDeclaration,
@@ -21,7 +21,7 @@ import {
 } from "./transformer";
 
 export function createCallVisitHandler(
-  api: BabelAPI,
+  api: PluginAPI,
   maybeTransformImportSource: TransformerDelegator,
   moduleMethods: ModuleMethods,
 )
@@ -134,7 +134,7 @@ export function createCallVisitHandler(
 }
 
 export function createDynamicImportVisitHandler(
-  api: BabelAPI,
+  api: PluginAPI,
   maybeTransformImportSource: TransformerDelegator,
 )
 {
@@ -169,7 +169,7 @@ export function createDynamicImportVisitHandler(
 }
 
 export function createStaticImportExportVisitHandler(
-  api: BabelAPI,
+  api: PluginAPI,
   maybeTransformImportSource: TransformerDelegator,
 )
 {
@@ -208,7 +208,7 @@ export function createStaticImportExportVisitHandler(
 }
 
 export function createVisitor(
-  api: BabelAPI,
+  api: PluginAPI,
   transformer: Transformer,
   options: TransformerOptions,
   moduleMethods: ModuleMethods,
